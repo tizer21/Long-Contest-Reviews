@@ -1,123 +1,145 @@
 #include <iostream>
 
-using namespace std;
-
+template <typename T>
 struct Node {
-    int data;
-    Node* next;
+    T data;
+    Node<T>* next;
 
-    Node(int _data = 0) {
+    Node(T _data) {
         data = _data;
-        next = NULL;
+        next = nullptr;
     }
 };
 
+template <typename T>
 class List {
 private:
-    Node* head;
+    Node<T>* head;
+    Node<T>* tail;
 
-    void erase() {
-        if (head == NULL) {
-            return;
-        }
-
-        Node* cur = head->next;
-        delete head;
-        head = cur;
-    }
-
-public:
-    List(Node* _head = NULL) {
+    List(Node<T>* _head, Node<T>* _tail) {
         head = _head;
+        tail = _tail;
     }
 
-    void add(int _data = 0) {
-        Node* newNode = new Node(_data);
-        if (head == NULL) {
-            head = newNode;
-        } else {
-            newNode->next = head;
-            head = newNode;
-        }
+    void free() {
+        head = nullptr;
+        tail = nullptr;
     }
 
     void clear() {
-        while (head != NULL) {
-            this->erase();
+        while (head != nullptr) {
+            this->pop_front();
         }
     }
 
-    void print() {
-        Node* cur = head;
-        while (cur != NULL) {
-            cout << cur->data << " ";
-            cur = cur->next;
+public:
+    List() {
+        head = nullptr;
+        tail = nullptr;
+    }
+
+    void push_back(T _data) {
+        Node<T>* new_node = new Node<T>(_data);
+
+        if (head == nullptr) {
+            head = new_node;
+        } else {
+            tail->next = new_node;
         }
+
+        tail = new_node;
+    }
+
+    void pop_front() {
+        if (head == tail) {
+            tail = nullptr;
+        }
+
+        Node<T>* tmp = head->next;
+        delete head;
+        head = tmp;
+    }
+
+    T front() {
+        return head->data;
+    }
+
+    bool empty() {
+        return head == nullptr;
+    }
+
+    List<T> split() {
+        Node<T>* mid = head;
+        Node<T>* tmp = head;
+
+        while (tmp != tail) {
+            tmp = tmp->next;
+
+            if (tmp == tail) {
+                break;
+            }
+
+            tmp = tmp->next;
+            mid = mid->next;
+        }
+
+        Node<T>* other_tail = tail;
+        Node<T>* other_head = mid->next;
+
+        mid->next = nullptr;
+        tail = mid;
+
+        return List(other_head, other_tail);
+    }
+
+    void merge(List& other) {
+        List res;
+
+        while (!this->empty() && !other.empty()) {
+            if (this->front() < other.front()) {
+                res.push_back(this->front());
+                this->pop_front();
+            } else {
+                res.push_back(other.front());
+                other.pop_front();
+            }
+        }
+        while (!this->empty()) {
+            res.push_back(this->front());
+            this->pop_front();
+        }
+        while (!other.empty()) {
+            res.push_back(other.front());
+            other.pop_front();
+        }
+
+        head = res.head;
+        tail = res.tail;
+
+        res.free();
     }
 
     void sort() {
-        if (head == NULL) {
+        if (head == tail) {
             return;
         }
 
-        int cnt = 0;
+        List other = this->split();
 
-        Node* cur = head;
-        while (cur != NULL) {
-            ++cnt;
+        this->sort();
+        other.sort();
+        
+        this->merge(other);
+    }
+
+    void print() {
+        Node<T>* cur = head;
+        while (cur != nullptr) {
+            std::cout << cur->data << " ";
             cur = cur->next;
         }
-
-        if (cnt == 1) {
-            return;
-        }
-
-        cur = head;
-        for (int i = 0; i < (cnt - 1) / 2; ++i) {
-            cur = cur->next;
-        }
-
-        List l1 = List(head);
-        List l2 = List(cur->next);
-        cur->next = NULL;
-
-        l1.sort();
-        l2.sort();
-
-        head = NULL;
-        cur = NULL;
-        while (l1.head != NULL && l2.head != NULL) {
-            if ((l1.head->data) < (l2.head->data)) {
-                if (cur == NULL) {
-                    cur = l1.head;
-                } else {
-                    cur->next = l1.head;
-                    cur = cur->next;
-                }
-                l1.head = l1.head->next;
-            } else {
-                if (cur == NULL) {
-                    cur = l2.head;
-                } else {
-                    cur->next = l2.head;
-                    cur = cur->next;
-                }
-                l2.head = l2.head->next;
-            }
-            if (head == NULL) {
-                head = cur;
-            }
-        }
-        while (l1.head != NULL) {
-            cur->next = l1.head;
-            cur = cur->next;
-            l1.head = l1.head->next;
-        }
-        while (l2.head != NULL) {
-            cur->next = l2.head;
-            cur = cur->next;
-            l2.head = l2.head->next;
-        }
+        std::cout << std::endl;
     }
 
     ~List() {
@@ -126,20 +148,24 @@ public:
 };
 
 int main() {
-    List l = List();
+    std::ios::sync_with_stdio(false);
 
-    int n;
-    cin >> n;
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
 
-    int el;
-    for (int i = 0; i != n; ++i) {
-        cin >> el;
+    List<int> my_list;
 
-        l.add(el);
+    size_t n;
+    std::cin >> n;
+
+    int val;
+    for (size_t i = 0; i != n; ++i) {
+        std::cin >> val;
+        my_list.push_back(val);
     }
 
-    l.sort();
-    l.print();
+    my_list.sort();
+    my_list.print();
 
     return 0;
 }
