@@ -93,25 +93,32 @@ public:
         return List(other_head, other_tail);
     }
 
+    void swap(List& other) {
+    	List<T> tmp(head, tail);
+
+    	head = other.head;
+    	tail = other.tail;
+
+    	other.head = tmp.head;
+    	other.tail = tmp.tail;
+
+    	tmp.free();
+    }
+
     void merge(List& other) {
         List res;
 
-        while (!this->empty() && !other.empty()) {
-            if (this->front() < other.front()) {
-                res.push_back(this->front());
-                this->pop_front();
+        while (!this->empty() || !other.empty()) {
+            if (this->empty()) {
+                this->swap(other);
             } else {
-                res.push_back(other.front());
-                other.pop_front();
+            	if (!other.empty() && (other.front() < this->front())) {
+            		this->swap(other);
+            	}
             }
-        }
-        while (!this->empty()) {
+
             res.push_back(this->front());
             this->pop_front();
-        }
-        while (!other.empty()) {
-            res.push_back(other.front());
-            other.pop_front();
         }
 
         head = res.head;
@@ -129,7 +136,7 @@ public:
 
         this->sort();
         other.sort();
-        
+
         this->merge(other);
     }
 
@@ -150,8 +157,8 @@ public:
 int main() {
     std::ios::sync_with_stdio(false);
 
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
 
     List<int> my_list;
 
