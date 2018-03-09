@@ -154,9 +154,8 @@ public:
         }
     }
 
-    HashMap(std::initializer_list<std::pair<KeyType, ValueType>> list, Hash hash = Hash()) : __hash(hash) {
-        HashMap(list.being(), list.end(), __hasher);
-    }
+    HashMap(std::initializer_list<std::pair<KeyType, ValueType>> list, Hash hash = Hash()) 
+    : HashMap(list.begin(), list.end(), hash) {}
 
     size_t size() const {
         return __sz;
