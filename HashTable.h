@@ -6,7 +6,7 @@
 template <class KeyType, class ValueType, class Hash = std::hash<KeyType>>
 class HashMap {
 private:
-    const size_t DEFAULT_SIZE = 1;
+    static const size_t DEFAULT_SIZE = 1;
     std::vector<std::list<std::pair<const KeyType, ValueType>>> __data;
     size_t __sz;
     Hash __hash;
