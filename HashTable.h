@@ -155,12 +155,7 @@ public:
     }
 
     HashMap(std::initializer_list<std::pair<KeyType, ValueType>> list, Hash hash = Hash()) : __hash(hash) {
-        __data.resize(DEFAULT_SIZE);
-        __sz = 0;
-
-        for (auto & value : list) {
-            this->insert(value);
-        }
+        HashMap(list.being(), list.end(), __hasher);
     }
 
     size_t size() const {
