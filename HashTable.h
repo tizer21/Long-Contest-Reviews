@@ -104,7 +104,7 @@ private:
             }
         }
 
-        Iterator& operator++() {
+        Iterator& operator++ () {
             ++__iter;
 
             if (__iter == __hashMap->__data[__index].end()) {
@@ -114,25 +114,25 @@ private:
             return *this;
         }
 
-        Iterator operator++(int) {
+        Iterator operator++ (int) {
             auto tmp = *this;
             ++(*this);
             return tmp;
         }
 
-        bool operator==(const Iterator& other) const {
+        bool operator== (const Iterator& other) const {
             return __index == other.__index && __iter == other.__iter;
         }
 
-        bool operator!=(const Iterator& other) const {
+        bool operator!= (const Iterator& other) const {
             return !(*this == other);
         }
 
-        reference operator*() const {
+        reference operator* () const {
             return *__iter;
         }
 
-        pointer operator->() {
+        pointer operator-> () {
             return &(*__iter);
         }
     };
@@ -270,7 +270,7 @@ public:
         __data.resize(DEFAULT_SIZE);
     }
 
-    HashMap& operator=(const HashMap other) {
+    HashMap& operator= (const HashMap other) {
         this->clear();
 
         for (auto& l : other.__data) {
