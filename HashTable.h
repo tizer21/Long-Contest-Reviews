@@ -243,7 +243,7 @@ public:
         const_iterator it = this->find(key);
 
         if (it == this->end()) {
-            throw std::out_of_range("Element isn't exist!");
+            throw std::out_of_range("Element doesn't exist!");
         }
 
         return it->second;
